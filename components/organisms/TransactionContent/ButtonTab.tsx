@@ -1,4 +1,4 @@
-import cx from "classNames";
+import cx from "classnames";
 
 interface ButtonTabProps {
   title: string;

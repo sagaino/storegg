@@ -1,5 +1,5 @@
 import Link from "next/link";
-import cx from "classNames";
+import cx from "classnames";
 import NumberFormat from "react-number-format";
 
 interface TableRowProps {

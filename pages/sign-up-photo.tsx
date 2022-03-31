@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import { useRouter } from "next/router";
+import validator from 'validator';
 import { getGameCategory } from "../services/player";
 import { setSignUp } from "../services/auth";
 import { CategoryTypes } from "../services/data-types";
@@ -40,25 +41,32 @@ export default function SignUpPhoto() {
     const getLocalForm = await localStorage.getItem('user-form');
     const form = JSON.parse(getLocalForm!);
     const data = new FormData();
+    const validEmail = form.email
+    if (validator.isEmail(validEmail)) {
+      data.append('image', image);
+      data.append('email', form.email);
+      data.append('name', form.name);
+      data.append('password', form.password);
+      data.append('username', form.name);
+      data.append('phoneNumber', form.phoneNumber);
+      data.append('favorite', favorite);
+      const result = await setSignUp(data);
+      if (result.error) {
+        toast.configure();
+        toast.error(result.message);
+        router.push('/sign-up')
+      } else {
+        toast.configure();
+        toast.success('Register Berhasil')
 
-    data.append('image', image);
-    data.append('email', form.email);
-    data.append('name', form.name);
-    data.append('password', form.password);
-    data.append('username', form.name);
-    data.append('phoneNumber', form.phoneNumber);
-    data.append('favorite', favorite);
+        router.push('/sign-up-success');
 
-    const result = await setSignUp(data);
-    if (result.error) {
-      toast.configure();
-      toast.error(result.message);
-      router.push('/sign-up')
+        // localStorage.removeItem('user-form');
+      }
     } else {
       toast.configure();
-      toast.success('Register Berhasil')
-      router.push('/sign-up-success');
-      // localStorage.removeItem('user-form');
+      toast.error('format email salah');
+      router.push('/sign-up')
     }
   }
 
